@@ -878,10 +878,9 @@ Login
   Wait Until Page Contains Element    id=addProtocol
   Click Element                       id=addProtocol
   Sleep   1
-  Wait Until Page Contains Element    xpath=.//*[@class='modal fade in']/div/div/div[2]/form/div/input
   Choose File                         xpath=.//*[@class='modal fade in']/div/div/div[2]/form/div/input   ${filepath}
   Sleep   1
-  Click Element                       xpath=.//*[@class='modal fade in']/div/div/div[2]/form/div/input
+  Click Element                       xpath=.//*[@class='modal fade in']/div/div/div[2]/form/button
 
 Завантажити протокол аукціону в авард
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
