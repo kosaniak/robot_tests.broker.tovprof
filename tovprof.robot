@@ -74,8 +74,8 @@ ${locator.questions[4].date}                                    xpath=.//*[@id='
 ${locator.questions[4].answer}                                  xpath=.//*[@id='auc-questions']/table/tbody/tr[5]/td[3]
 ${locator.cancellations[0].status}                              xpath=html/body/div/div[2]/p[9]/span[1]
 ${locator.cancellations[0].reason}                              xpath=html/body/div/div[2]/p[9]/span[2]
-${locator.awards[0].status}                                     xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[2]
-${locator.awards[1].status}                                     xpath=.//*[@id='result-auc']/table/tbody/tr[2]/td[2]
+${locator.awards[0].status}                                     xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[2]/p
+${locator.awards[1].status}                                     xpath=.//*[@id='result-auc']/table/tbody/tr[2]/td[2]/p
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -102,6 +102,7 @@ Login
   Input Text       xpath=html/body/div/div/div/div/div[2]/form/div[1]/input    ${USERS.users['${ARGUMENTS[0]}'].login}
   Input Text       xpath=html/body/div/div/div/div/div[2]/form/div[2]/input    ${USERS.users['${ARGUMENTS[0]}'].password}
   Click Element    xpath=html/body/div/div/div/div/div[2]/form/div[3]/button
+  Sleep  1
   Click Element    xpath=.//*[@id='navbar']/ul[1]/li[2]/a
 
 Створити тендер
@@ -283,6 +284,7 @@ Login
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[2]} ==  fieldname
+  Sleep  1
   Click Element     xpath=html/body/div/div/div[2]/div/ul/li[2]/a
   ${return_value}=  Run Keyword  Отримати інформацію про ${ARGUMENTS[2]}
   [return]           ${return_value}
@@ -298,7 +300,7 @@ Login
 
 Отримати інформацію про procurementMethodType
   ${type}=           Отримати текст із поля і показати на сторінці   procurementMethodType
-  ${return_value}=   convert_tovprof_string_to_common_string         ${type}
+  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string         ${type}
   [return]           ${return_value}
 
 Отримати інформацію про dgfID
@@ -325,7 +327,7 @@ Login
 Отримати інформацію про status
   Reload Page
   ${status}=         Get Text   xpath=.//*[@id='status']/span[2]
-  ${return_value}=   convert_tovprof_string_to_common_string    ${status}
+  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string    ${status}
   log to console     ${return_value}
   [return]           ${return_value}
 
@@ -409,12 +411,12 @@ Login
 
 Отримати інформацію про value.currency
   ${currency}=   Отримати текст із поля і показати на сторінці  value.currency
-  ${return_value}=   convert_tovprof_string_to_common_string        ${currency}
+  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string        ${currency}
   [return]           ${return_value}
 
 Отримати інформацію про value.valueAddedTaxIncluded
   ${tax}=    Отримати текст із поля і показати на сторінці  value.valueAddedTaxIncluded
-  ${return_value}=   convert_tovprof_string_to_common_string        ${tax}
+  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string        ${tax}
   [return]           ${return_value}
 
 Отримати інформацію про auctionID
@@ -539,9 +541,15 @@ Login
 
 Отримати інформацію про awards[${index}].status
   Reload Page
-  Click Element      xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
-  ${value}=   Отримати текст із поля і показати на сторінці  awards[${index}].status
-  ${return_value}=   convert_tovprof_string_to_common_string  ${value}
+  log to console  ${index}
+  ${index}=    inc    ${index}
+  Sleep  1
+  Click Element            xpath=html/body/div/div/div[2]/div/ul/li[1]/a
+  Sleep  1
+  ${value}=    Get Text    xpath=.//*[@id='result-auc']/table/tbody/tr[${index}]/td[2]/p
+  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string    ${value}
+  log to console     ${value}
+  log to console     ${return_value}
   [return]           ${return_value}
 
 Подати цінову пропозицію
@@ -633,8 +641,8 @@ Login
   Reload Page
   Wait Until Page Contains Element    xpath=.//*[@id='navbar']/ul[2]/li[1]/a
   Click Element                       xpath=.//*[@id='navbar']/ul[2]/li[1]/a
-  Wait Until Page Contains Element    xpath=html/body/div/div/div[1]/div/ul/li[2]/a
-  Click Element                       xpath=html/body/div/div/div[1]/div/ul/li[2]/a
+  Wait Until Page Contains Element    xpath=//div[@class="panel panel-default"][1]/ul/li[2]/a
+  Click Element                       xpath=//div[@class="panel panel-default"][1]/ul/li[2]/a
   Wait Until Page Contains Element    id=documents_upload
   Choose File                         id=documents_upload     ${filepath}
   Click Element                       xpath=html//form/div[3]/button[@type="submit"]
@@ -844,13 +852,13 @@ Login
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  Reload Page
+  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Contains Element      id=disqualification
   Click Element                         id=disqualification
 
 Підтвердити постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  Reload Page
+  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Contains Element    id=qualification
   Click Element                       id=qualification
   Click Element                       xpath=html/body/div/div/div[2]/form[2]/button
@@ -865,7 +873,7 @@ Login
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${filepath}  ${tender_uaid}  ${award_num}
-  Reload Page
+  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Contains Element    id=qualification
   Click Element                       id=qualification
   Choose File                         xpath=html/body/div/div/div[2]/form[1]/div/input   ${filepath}
@@ -874,7 +882,7 @@ Login
 
 Завантажити протокол аукціону
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
-  Reload Page
+  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Contains Element    id=addProtocol
   Click Element                       id=addProtocol
   Sleep   1
@@ -907,3 +915,8 @@ Login
 Підтвердити наявність протоколу аукціону
   [Arguments]  ${username}  ${tender_uaid}  ${award_index}
   tovprof.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Reload Page
+  Wait Until Page Contains Element    id=qualification
+  Click Element                       id=qualification
+  ${docs}=   Get Matching Xpath Count   xpath=html/body/div/div/div[1]/div[@class = 'document']
+  Should Be True  ${docs} > 1
