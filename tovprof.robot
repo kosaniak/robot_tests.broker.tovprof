@@ -361,8 +361,16 @@ Login
   Wait Until Page Contains Element   id=edit
   Click Element                      id=edit
   Wait Until Page Contains Element   ${locator.edit.${fieldname}}
-  Run Keyword If    '${fieldname}' == 'tenderAttempts'  Select From List By Value  ${fieldvalue}
-  ...  ELSE  Input Text       ${locator.edit.${fieldname}}   ${fieldvalue}
+  ${fieldvalue}=  Run Keyword If  '${fieldname}' == 'dgfDecisionDate'
+  ...  convert_ISO_DMY  ${fieldvalue}
+  ...  ELSE  Set Variable  ${fieldvalue}
+  ${fieldvalue}=  Run Keyword If  '${fieldname}' == 'dgfDecisionDate'
+  ...  convert_ISO_DMY  ${fieldvalue}
+  ...  ELSE  Run Keyword If  '${fieldname}' == 'tenderAttempts'  Get Str  ${fieldvalue}
+  ...  ELSE  Set Variable  ${fieldvalue}
+  log to console  ${fieldvalue}
+  Run Keyword If    '${fieldname}' == 'tenderAttempts'  Select From List By Value    ${locator.edit.${fieldname}}   ${fieldvalue}
+  ...  ELSE  Input Text     ${locator.edit.${fieldname}}   ${fieldvalue}
   Click Element      xpath=//button[@type="submit"]
   tovprof.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
   ${result_field}=    Get Text    ${locator.${fieldname}}
