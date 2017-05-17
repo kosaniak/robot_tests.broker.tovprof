@@ -5,7 +5,12 @@ Library   Collections
 Library   tovprof_service.py
 
 *** Variables ***
-${locator.edit.description}                                     id=ePosition_description
+${locator.edit.title}                                           xpath=//input[@name='title']
+${locator.edit.description}                                     xpath=//textarea[@name='description']
+${locator.edit.dgfID}                                           xpath=html/body/div/div/div[2]/div/div[2]/form/div[1]/input
+${locator.edit.dgfDecisionDate}                                 xpath=//input[@name='dgfDecisionDate']
+${locator.edit.dgfDecisionID}                                   xpath=//input[@name='dgfDecisionId']
+${locator.edit.tenderAttempts}                                  xpath=//select[@name='tenderAttempts']
 ${locator.title}                                                id=title
 ${locator.description}                                          id=description
 ${locator.minimalStep.amount}                                   id=minimal-step-info
@@ -20,7 +25,7 @@ ${locator.tenderPeriod.startDate}                               id=tendering-sta
 ${locator.tenderPeriod.endDate}                                 id=tendering-end-info
 ${locator.tenderId}                                             id=auctionId-info
 ${locator.procuringEntity.name}                                 id=organizer-name-info
-${locator.dgf}                                                  id=dgf-id-info
+${locator.dgfID}                                                id=dgf-id-info
 ${locator.dgfDecisionID}                                        id=dgf-decision-id-info
 ${locator.dgfDecisionDate}                                      id=dgf-decision-date-info
 ${locator.eligibilityCriteria}                                  xpath=html/body/div/div/div[1]/div[2]/div[2]/p[5]
@@ -123,7 +128,7 @@ Login
   ${valueAddedTaxIncluded}=    Get From Dictionary     ${ARGUMENTS[1].data.value}            valueAddedTaxIncluded
   ${start_auction}=        Get From Dictionary         ${ARGUMENTS[1].data.auctionPeriod}    startDate
   ${start_auction}=        convert_iso_to_date_time    ${start_auction}
-  ${email}                 Get From Dictionary  ${ARGUMENTS[1].data.procuringEntity.contactPoint}  email
+  ${email}=                Get From Dictionary  ${ARGUMENTS[1].data.procuringEntity.contactPoint}  email
   Switch Browser    ${ARGUMENTS[0]}
   Go to   ${USERS.users['${ARGUMENTS[0]}'].default_page}
   Wait Until Page Contains Element     id=createAuction                                 20
@@ -208,13 +213,15 @@ Login
   ...      ${ARGUMENTS[2]} ==  questionId
   ${title}=        Get From Dictionary  ${ARGUMENTS[2].data}  title
   ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
+  ${email}=        Get From Dictionary  ${ARGUMENTS[1].data.procuringEntity.contactPoint}  email
   Reload Page
   Wait Until Page Contains Element    id=addQuestion
   Click Element                       id=addQuestion
-  Wait Until Page Contains Element    xpath=html/body/div/div/form/div[1]/input
-  Input text                          xpath=html/body/div/div/form/div[1]/input    ${title}
-  Input text                          xpath=html/body/div/div/form/div[2]/input    ${description}
-  Click Element                       xpath=html/body/div/div/form/button
+  Wait Until Page Contains Element    xpath=.//*[@id='modalAddQuestion']/div/div/div[2]/form/div[1]/input
+  Input text                          xpath=.//*[@id='modalAddQuestion']/div/div/div[2]/form/div[1]/input    ${email}
+  Input text                          xpath=.//*[@id='modalAddQuestion']/div/div/div[2]/form/div[2]/input    ${title}
+  Input text                          xpath=.//*[@id='modalAddQuestion']/div/div/div[2]/form/div[3]/textarea    ${description}
+  Click Element                       xpath=.//*[@id='modalAddQuestion']/div/div/div[2]/form/button
 
 Скасувати закупівлю
   [Arguments]  @{ARGUMENTS}
@@ -259,6 +266,7 @@ Login
   ...      ${ARGUMENTS[1]} ==  tender_uaid
   ...      ${ARGUMENTS[2]} ==  item_id
   ...      ${ARGUMENTS[3]} ==  field_name
+  Reload Page
   ${return_value}=  Run Keyword And Return  tovprof.Отримати інформацію по предмету  ${username}  ${tender_uaid}  ${item_id}  ${field_name}
   [return]           ${return_value}
 
@@ -269,6 +277,7 @@ Login
   ...      ${ARGUMENTS[1]} ==  tender_uaid
   ...      ${ARGUMENTS[2]} ==  item_id
   ...      ${ARGUMENTS[3]} ==  field_name
+  Reload Page
   sleep  1
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
@@ -286,12 +295,14 @@ Login
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[2]} ==  fieldname
+  Reload Page
   Sleep  1
   Click Element     xpath=html/body/div/div/div[2]/div/ul/li[2]/a
   ${return_value}=  Run Keyword  Отримати інформацію про ${ARGUMENTS[2]}
   [return]           ${return_value}
 
 Отримати інформацію про title
+  Reload Page
   ${return_value}=   Get Text  ${locator.title}
   [return]           ${return_value}
 ''
@@ -301,7 +312,7 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про dgfID
-  ${return_value}=   Get Text  ${locator.dgf}
+  ${return_value}=   Get Text  ${locator.dgfID}
   [return]           ${return_value}
 
 Отримати інформацію про dgfDecisionID
@@ -339,25 +350,25 @@ Login
 
 Отримати інформацію про minimalStep.amount
   ${return_value}=   Get Text  ${locator.minimalStep.amount}
-  ${return_value}=   convert to number   ${return_value.replace(' ', '').replace(',', '.')}
+  ${return_value}=   Convert To Number   ${return_value.replace(' ', '').replace(',', '.')}
   [return]           ${return_value}
 
 Внести зміни в тендер
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} =  username
-  ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} ==  fieldname
-  ...      ${ARGUMENTS[3]} ==  fieldvalue
-  Wait Until Page Contains Element   ${locator.edit.${ARGUMENTS[2]}}   5
-  Input Text       ${locator.edit.${ARGUMENTS[2]}}   ${ARGUMENTS[3]}
-  Click Element      id=btnPublic
-  Wait Until Page Contains      Публікацію виконано        5
-  ${result_field}=  Get Value   ${locator.edit.${ARGUMENTS[2]}}
-  Should Be Equal   ${result_field}   ${ARGUMENTS[3]}
+  [Arguments]  ${username}  ${tender_uaid}  ${fieldname}  ${fieldvalue}
+  tovprof.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+  log to console  ${fieldname}
+  Wait Until Page Contains Element   id=edit
+  Click Element                      id=edit
+  Wait Until Page Contains Element   ${locator.edit.${fieldname}}
+  Run Keyword If    '${fieldname}' == 'tenderAttempts'  Select From List By Value  ${fieldvalue}
+  ...  ELSE  Input Text       ${locator.edit.${fieldname}}   ${fieldvalue}
+  Click Element      xpath=html/body/div/div/div[2]/div/div[2]/form/button
+  tovprof.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+  ${result_field}=    Get Text    ${locator.${fieldname}}
+  Should Be Equal   ${fieldvalue}   ${result_field}
 
 Отримати інформацію про items[${index}].quantity
-  sleep  1
+  Reload Page
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
   ${return_value}=    Get Text  ${locator.items[${index}].quantity}
@@ -365,76 +376,83 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].unit.code
-  sleep  1
+  Reload Page
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].unit.code}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].unit.name
-  sleep  1
+  Reload Page
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].unit.name}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].description
-  sleep  1
+  Reload Page
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].description}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].classification.id
-  sleep  1
+  Reload Page
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].classification.id}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].classification.scheme
-  sleep  1
+  Reload Page
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].classification.scheme}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].classification.description
-  sleep  1
+  Reload Page
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].classification.description}
   [return]           ${return_value}
 
 Отримати інформацію про value.currency
+  Reload Page
   ${currency}=       Get Text  ${locator.value.currency}
   ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string        ${currency}
   [return]           ${return_value}
 
 Отримати інформацію про value.valueAddedTaxIncluded
+  Reload Page
   ${tax}=            Get Text  ${locator.value.valueAddedTaxIncluded}
   ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string        ${tax}
   [return]           ${return_value}
 
 Отримати інформацію про auctionID
+  Reload Page
   ${return_value}=   Get Text  ${locator.tenderId}
   [return]           ${return_value}
 
 Отримати інформацію про procuringEntity.name
+  Reload Page
   ${return_value}=   Get Text  ${locator.procuringEntity.name}
   [return]           ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.latitude
+  Reload Page
   ${return_value}=   Get Text  ${locator.items[0].deliveryLocation.latitude}
   ${return_value}=   Convert To Number   ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.longitude
+  Reload Page
   ${return_value}=   Get Text  ${locator.items[0].deliveryLocation.longitude}
   ${return_value}=   Convert To Number   ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про auctionPeriod.startDate
+  Reload Page
   ${value}=          Get Text  ${locator.auctionPeriod.startDate}
   ${return_value}=   tovprof_service.convert_date_time_to_iso   ${value}
   log to console     ${return_value}
@@ -448,55 +466,66 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про tenderPeriod.startDate
+  Reload Page
   ${value}=          Get Text  ${locator.tenderPeriod.startDate}
   ${return_value}=   tovprof_service.convert_date_time_to_iso   ${value}
   log to console     ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про tenderPeriod.endDate
+  Reload Page
   ${value}=          Get Text  ${locator.tenderPeriod.endDate}
   ${return_value}=   tovprof_service.convert_date_time_to_iso   ${value}
   log to console     ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про enquiryPeriod.startDate
+  Reload Page
   ${value}=          Get Text  ${locator.tenderPeriod.startDate}
   ${return_value}=   tovprof_service.convert_date_time_to_iso   ${value}
   log to console     ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про enquiryPeriod.endDate
+  Reload Page
   ${value}=          Get Text  ${locator.tenderPeriod.endDate}
   ${return_value}=   tovprof_service.convert_date_time_to_iso   ${value}
   log to console     ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про items[0].deliveryAddress.countryName
+  Reload Page
   ${return_value}=   Get Text  ${locator.items[0].deliveryAddress.countryName}
   [return]           ${return_value.split(', ')[0]}
 
 Отримати інформацію про items[0].deliveryAddress.postalCode
+  Reload Page
   ${return_value}=   Get Text  ${locator.items[0].deliveryAddress.postalCode}
   [return]           ${return_value.split(', ')[1]}
 
 Отримати інформацію про items[0].deliveryAddress.region
+  Reload Page
   ${return_value}=   Get Text  ${locator.items[0].deliveryAddress.region}
   [return]           ${return_value.split(', ')[2]}
 
 Отримати інформацію про items[0].deliveryAddress.locality
+  Reload Page
   ${return_value}=   Get Text  ${locator.items[0].deliveryAddress.locality}
   [return]           ${return_value.split(', ')[3]}
 
 Отримати інформацію про items[0].deliveryAddress.streetAddress
+  Reload Page
   ${return_value}=   Get Text  ${locator.items[0].deliveryAddress.streetAddress}
   [return]           ${return_value.split(', ')[4]}
 
 Отримати інформацію про items[0].deliveryDate.endDate
+  Reload Page
   ${date_value}=     Get Text  ${locator.items[0].deliveryDate.endDate}
   ${return_value}=   tovprof_service.convert_date    ${date_value}
   [return]           ${return_value}
 
 Отримати інформацію про questions[${index}].title
+  Reload Page
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
@@ -507,6 +536,7 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про questions[${index}].description
+  Reload Page
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
@@ -517,6 +547,7 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про questions[${index}].answer
+  Reload Page
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
@@ -527,6 +558,7 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про questions[${index}].date
+  Reload Page
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
@@ -792,6 +824,7 @@ Login
 
 Задати запитання на тендер
   [Arguments]  ${username}  ${tender_uaid}  ${question}
+  ${email}=  ${tender_uaid.data.procuringEntity.contactPoint}  email
   Reload Page
   Wait Until Page Contains Element      xpath=html/body/div/div/div[2]/div/ul/li[5]/a
   Sleep  1
@@ -800,6 +833,8 @@ Login
   Wait Until Page Contains Element    id=addQuestion
   Click Element                       id=addQuestion
   Sleep  1
+  Wait Until Page Contains Element    xpath=.//*[@id='modalAddQuestion']//input[@name="email"]
+  Input text                          xpath=.//*[@id='modalAddQuestion']//input[@name="email"]             ${email}
   Input text                          xpath=.//*[@id='modalAddQuestion']//input[@name="title"]             ${question.data.title}
   Input text                          xpath=.//*[@id='modalAddQuestion']//textarea[@name="description"]    ${question.data.description}
   Click Element                       xpath=.//*[@id='modalAddQuestion']//button[@type="submit"]
@@ -833,51 +868,50 @@ Login
 Отримати дані із документу пропозиції
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}  ${document_index}  ${field}
   Reload Page
-  Wait Until Page Contains Element    id=qualification
-  Click Element                       id=qualification
+  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   ${document_index}=                  inc    ${document_index}
-  ${result}=   Get Text               xpath=html/body/div/div/div[1]/div[${document_index}]/p[1]/span[2]
+  Sleep  1
+  ${result}=   Get Text               xpath=.//*[@id='result-auc']/table/tbody/tr[${bid_index}]/td[4]/a[${document_index}]/p
   [Return]   ${result}
 
 Отримати кількість документів в ставці
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
   Reload Page
-  Wait Until Page Contains Element                id=qualification
-  Click Element                                   id=qualification
-  ${bid_doc_number}=  Get Matching Xpath Count    xpath=html/body/div/div/div[1]/div[@class = 'document']
+  Wait Until Page Contains Element                xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Click Element                                   xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Sleep  1
+  ${bid_doc_number}=  Get Matching Xpath Count    xpath=.//*[@id='result-auc']/table/tbody/tr[${bid_index}]/td[4]/a
   [Return]  ${bid_doc_number}
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Reload Page
   Wait Until Page Contains Element      id=disqualification
   Click Element                         id=disqualification
 
 Підтвердити постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Page Contains Element    id=qualification
-  Click Element                       id=qualification
-  Click Element                       xpath=html/body/div/div/div[2]/form[2]/button
+  Reload Page
+  ${award_num}=    inc    ${award_num}
+  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Sleep  1
+  Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/form/button
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
-  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Page Contains Element    id=qualification
-  Click Element                       id=qualification
-  Input Text                          xpath=html/body/div/div/div[2]/form[3]/div/input  ${description}
-  click Element                       xpath=html/body/div/div/div[2]/form[3]/button
+  Reload Page
+  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Sleep  1
+  Wait Until Page Contains Element    xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/a[@id='disqualify']
+  Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[5]/button
+  Sleep  1
+  Input Text                          xpath=.//*[@id='reason']  ${description}
+  click Element                       xpath=.//*[@id='modalDisqualification']/div/div/div[2]/form/button
 
-Завантажити документ рішення кваліфікаційної комісії
-  [Arguments]  ${username}  ${filepath}  ${tender_uaid}  ${award_num}
-  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Page Contains Element    id=qualification
-  Click Element                       id=qualification
-  Choose File                         xpath=html/body/div/div/div[2]/form[1]/div/input   ${filepath}
-  Sleep   2
-  Click Element                       xpath=html/body/div/div/div[2]/form[1]/button
-
-Завантажити протокол аукціону
+Завантажити протокол аукціону в авард
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
   tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Contains Element    id=addProtocol
@@ -886,11 +920,6 @@ Login
   Choose File                         xpath=.//*[@class='modal fade in']/div/div/div[2]/form/div/input   ${filepath}
   Sleep   1
   Click Element                       xpath=.//*[@class='modal fade in']/div/div/div[2]/form/button
-
-Завантажити протокол аукціону в авард
-  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
-  Reload Page
-  tovprof.Завантажити протокол аукціону  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
@@ -911,9 +940,8 @@ Login
 
 Підтвердити наявність протоколу аукціону
   [Arguments]  ${username}  ${tender_uaid}  ${award_index}
-  tovprof.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Reload Page
-  Wait Until Page Contains Element    id=qualification
-  Click Element                       id=qualification
-  ${docs}=   Get Matching Xpath Count   xpath=html/body/div/div/div[1]/div[@class = 'document']
+  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  ${docs}=  Get Matching Xpath Count  xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[4]/a
   Should Be True  ${docs} > 1
