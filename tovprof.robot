@@ -77,8 +77,8 @@ ${locator.questions[4].title}                                   xpath=.//*[@id='
 ${locator.questions[4].description}                             xpath=.//*[@id='auc-questions']/table/tbody/tr[5]/td[2]
 ${locator.questions[4].date}                                    xpath=.//*[@id='auc-questions']/table/tbody/tr[5]/td[1]/span[2]
 ${locator.questions[4].answer}                                  xpath=.//*[@id='auc-questions']/table/tbody/tr[5]/td[3]
-${locator.cancellations[0].status}                              xpath=html/body/div/div[2]/p[9]/span[1]
-${locator.cancellations[0].reason}                              xpath=html/body/div/div[2]/p[9]/span[2]
+${locator.cancellations[0].status}                              id=status-info
+${locator.cancellations[0].reason}                              id=reason-info
 ${locator.awards[0].status}                                     xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[2]/p
 ${locator.awards[1].status}                                     xpath=.//*[@id='result-auc']/table/tbody/tr[2]/td[2]/p
 
@@ -230,7 +230,7 @@ Login
   Wait Until Page Contains Element   id=cancel
   Click Element     id=cancel
   Sleep   2
-  Input text        xpath=.//*[@id='modalCancelAuction']/div/div/div[2]/form/div[1]/input    ${ARGUMENTS[2]}
+  Select From List By Value    xpath=.//*[@id='modalCancelAuction']/div/div/div[2]/form/div[1]/select    ${ARGUMENTS[2]}
   Choose File       xpath=.//*[@id='modalCancelAuction']/div/div/div[2]/form/div[2]/input    ${ARGUMENTS[3]}
   Input text        xpath=.//*[@id='modalCancelAuction']/div/div/div[2]/form/div[3]/input    ${ARGUMENTS[4]}
   Click Element     xpath=.//*[@id='modalCancelAuction']/div/div/div[2]/form/button
