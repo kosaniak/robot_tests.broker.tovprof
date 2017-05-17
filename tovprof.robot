@@ -7,7 +7,7 @@ Library   tovprof_service.py
 *** Variables ***
 ${locator.edit.title}                                           xpath=//input[@name='title']
 ${locator.edit.description}                                     xpath=//textarea[@name='description']
-${locator.edit.dgfID}                                           xpath=html/body/div/div/div[2]/div/div[2]/form/div[1]/input
+${locator.edit.dgfID}                                           xpath=//input[@name='dgfID']
 ${locator.edit.dgfDecisionDate}                                 xpath=//input[@name='dgfDecisionDate']
 ${locator.edit.dgfDecisionID}                                   xpath=//input[@name='dgfDecisionId']
 ${locator.edit.tenderAttempts}                                  xpath=//select[@name='tenderAttempts']
@@ -94,11 +94,6 @@ ${locator.awards[1].status}                                     xpath=.//*[@id='
 Підготувати дані для оголошення тендера
   [Arguments]  ${username}   ${tender_data}    ${role_name}
   [Return]     ${tender_data}
-
-Підготувати дані для оголошення тендера користувачем
-  [Arguments]      ${username}      ${tender_data}      ${role_name}
-  [Documentation]  Відключити створення тендеру в тестовому режимі
-  [Return]         ${tender_data}
 
 Login
   [Arguments]  @{ARGUMENTS}
@@ -281,7 +276,7 @@ Login
   sleep  1
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
-  ${return_value}=  Run Keyword If ${ARGUMENTS[3]} == 'quantity'               Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[1]
+  ${return_value}=  Run Keyword If ${ARGUMENTS[3]} == 'quantity'                Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[1]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'unit.code'                   Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[3]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'unit.name'                   Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[2]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'description'                 Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[1]/span[1]
@@ -297,7 +292,8 @@ Login
   ...      ${ARGUMENTS[2]} ==  fieldname
   Reload Page
   Sleep  1
-  Click Element     xpath=html/body/div/div/div[2]/div/ul/li[2]/a
+
+  Click Element     xpath=html/body/div[1]/div/div[2]/div/ul/li[2]/a
   ${return_value}=  Run Keyword  Отримати інформацію про ${ARGUMENTS[2]}
   [return]           ${return_value}
 
@@ -312,19 +308,23 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про dgfID
+  Reload Page
   ${return_value}=   Get Text  ${locator.dgfID}
   [return]           ${return_value}
 
 Отримати інформацію про dgfDecisionID
+  Reload Page
   ${return_value}=   Get Text  ${locator.dgfDecisionID}
   [return]           ${return_value}
 
 Отримати інформацію про dgfDecisionDate
+  Reload Page
   ${date_value}=     Get Text  ${locator.dgfDecisionDate}
   ${return_value}=   tovprof_service.convert_date    ${date_value}
   [return]           ${return_value}
 
 Отримати інформацію про tenderAttempts
+  Reload Page
   ${return_value}=   Get Text  ${locator.tenderAttempts}
   ${return_value}=   Convert To Integer   ${return_value}
   [return]           ${return_value}
@@ -340,6 +340,7 @@ Login
   [return]           ${return_value}
 
 Отримати інформацію про description
+  Reload Page
   ${return_value}=   Get Text  ${locator.description}
   [return]           ${return_value}
 
@@ -362,7 +363,7 @@ Login
   Wait Until Page Contains Element   ${locator.edit.${fieldname}}
   Run Keyword If    '${fieldname}' == 'tenderAttempts'  Select From List By Value  ${fieldvalue}
   ...  ELSE  Input Text       ${locator.edit.${fieldname}}   ${fieldvalue}
-  Click Element      xpath=html/body/div/div/div[2]/div/div[2]/form/button
+  Click Element      xpath=//button[@type="submit"]
   tovprof.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
   ${result_field}=    Get Text    ${locator.${fieldname}}
   Should Be Equal   ${fieldvalue}   ${result_field}
@@ -573,7 +574,7 @@ Login
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
-  Click Element            xpath=html/body/div/div/div[2]/div/ul/li[1]/a
+  Click Element            xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Sleep  1
   ${value}=    Get Text    xpath=.//*[@id='result-auc']/table/tbody/tr[${index}]/td[2]/p
   ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string    ${value}
@@ -934,7 +935,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
   ${file_path}  ${file_title}  ${file_content}=   create_fake_doc
   Sleep    1
-  tovprof.Завантажити угоду до тендера   ${username}  ${tender_uaid}  1  ${filepath}
+  tovprof.Завантажити угоду до тендера   ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
   Wait Until Page Contains Element    xpath=html/body/div/div/div[2]/form[2]/button
   Click Element                       xpath=html/body/div/div/div[2]/form[2]/button
 
@@ -944,4 +945,4 @@ Login
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   ${docs}=  Get Matching Xpath Count  xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[4]/a
-  Should Be True  ${docs} > 1
+  Should Be True  ${docs} > 0
