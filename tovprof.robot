@@ -303,7 +303,7 @@ Login
 ''
 Отримати інформацію про procurementMethodType
   ${type}=           Get Text  ${locator.procurementMethodType}
-  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string         ${type}
+  ${return_value}=   convert_tovprof_string_to_common_string         ${type}
   [return]           ${return_value}
 
 Отримати інформацію про dgfID
@@ -334,7 +334,7 @@ Login
 Отримати інформацію про status
   Reload Page
   ${status}=         Get Text   xpath=.//*[@id='status']/span[2]
-  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string    ${status}
+  ${return_value}=   convert_tovprof_string_to_common_string    ${status}
   log to console     ${return_value}
   [return]           ${return_value}
 
@@ -360,8 +360,13 @@ Login
   Wait Until Page Contains Element   id=edit
   Click Element                      id=edit
   Wait Until Page Contains Element   ${locator.edit.${fieldname}}
-  Run Keyword If    '${fieldname}' == 'tenderAttempts'  Select From List By Value  ${fieldvalue}
-  ...  ELSE  Input Text       ${locator.edit.${fieldname}}   ${fieldvalue}
+  ${fieldvalue}=  Run Keyword If  '${fieldname}' == 'dgfDecisionDate'
+  ...  convert_ISO_DMY  ${fieldvalue}
+  ...  ELSE  Run Keyword If  '${fieldname}' == 'tenderAttempts'  Get Str  ${fieldvalue}
+  ...  ELSE  Set Variable  ${fieldvalue}
+  log to console  ${fieldvalue}
+  Run Keyword If    '${fieldname}' == 'tenderAttempts'  Select From List By Value    ${locator.edit.${fieldname}}   ${fieldvalue}
+  ...  ELSE  Input Text     ${locator.edit.${fieldname}}   ${fieldvalue}
   Click Element      xpath=//button[@type="submit"]
   tovprof.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
   ${result_field}=    Get Text    ${locator.${fieldname}}
@@ -420,13 +425,13 @@ Login
 Отримати інформацію про value.currency
   Reload Page
   ${currency}=       Get Text  ${locator.value.currency}
-  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string        ${currency}
+  ${return_value}=   convert_tovprof_string_to_common_string        ${currency}
   [return]           ${return_value}
 
 Отримати інформацію про value.valueAddedTaxIncluded
   Reload Page
   ${tax}=            Get Text  ${locator.value.valueAddedTaxIncluded}
-  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string        ${tax}
+  ${return_value}=   convert_tovprof_string_to_common_string        ${tax}
   [return]           ${return_value}
 
 Отримати інформацію про auctionID
@@ -576,7 +581,7 @@ Login
   Click Element            xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Sleep  1
   ${value}=    Get Text    xpath=.//*[@id='result-auc']/table/tbody/tr[${index}]/td[2]/p
-  ${return_value}=   tovprof_service.convert_tovprof_string_to_common_string    ${value}
+  ${return_value}=   convert_tovprof_string_to_common_string    ${value}
   log to console     ${value}
   log to console     ${return_value}
   [return]           ${return_value}
