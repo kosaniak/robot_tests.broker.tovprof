@@ -53,9 +53,6 @@ def convert_document_type(string):
 def get_min_step(initial_tender_data):
     return str(initial_tender_data.data.minimalStep.amount)
 
-def get_quantity(item):
-    return str(item.quantity)
-
 def get_tenderAttempts(item):
     return str(item.tenderAttempts)
 

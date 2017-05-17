@@ -262,17 +262,6 @@ Login
   ...      ${ARGUMENTS[2]} ==  item_id
   ...      ${ARGUMENTS[3]} ==  field_name
   Reload Page
-  ${return_value}=  Run Keyword And Return  tovprof.Отримати інформацію по предмету  ${username}  ${tender_uaid}  ${item_id}  ${field_name}
-  [return]           ${return_value}
-
-Отримати інформацію по предмету
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  tender_uaid
-  ...      ${ARGUMENTS[2]} ==  item_id
-  ...      ${ARGUMENTS[3]} ==  field_name
-  Reload Page
   sleep  1
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
