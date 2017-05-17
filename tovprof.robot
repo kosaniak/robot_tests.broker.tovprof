@@ -292,7 +292,6 @@ Login
   ...      ${ARGUMENTS[2]} ==  fieldname
   Reload Page
   Sleep  1
-
   Click Element     xpath=html/body/div[1]/div/div[2]/div/ul/li[2]/a
   ${return_value}=  Run Keyword  Отримати інформацію про ${ARGUMENTS[2]}
   [return]           ${return_value}
