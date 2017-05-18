@@ -935,7 +935,11 @@ Login
 Підтвердити наявність протоколу аукціону
   [Arguments]  ${username}  ${tender_uaid}  ${award_index}
   Reload Page
+  ${type} = Отримати інформацію про procurementMethodType
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   ${docs}=  Get Matching Xpath Count  xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[4]/a
-  Should Be True  ${docs} > 0
+  ${num}=  Run Keyword If  '${type}' = 'dgfFinancialAssets'
+  ...  Set Variable  1
+  ...  ELSE  Set Variable  0
+  Should Be True  ${docs} > ${num}
