@@ -891,19 +891,21 @@ Login
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Sleep  1
+  Wait Until Page Contains Element    xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/form/button
   Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/form/button
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
   Reload Page
+  ${award_num}=    inc    ${award_num}
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/a[@id='disqualify']
-  Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[5]/button
+  Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/a[@id='disqualify']
   Sleep  1
   Input Text                          xpath=.//*[@id='reason']  ${description}
-  click Element                       xpath=.//*[@id='modalDisqualification']/div/div/div[2]/form/button
+  click Element                       xpath=.//*[@id='modalDisqualification']//form/button
 
 Завантажити протокол аукціону в авард
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
