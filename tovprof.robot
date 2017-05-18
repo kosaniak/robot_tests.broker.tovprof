@@ -265,7 +265,7 @@ Login
   sleep  1
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
-  ${return_value}=  Run Keyword If  ${ARGUMENTS[3]} == 'quantity'                Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[1]
+  ${return_value}=  Run Keyword If  ${ARGUMENTS[3]} == 'quantity'               Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[1]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'unit.code'                   Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[3]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'unit.name'                   Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[2]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'description'                 Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[1]/span[1]
@@ -939,7 +939,7 @@ Login
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   ${docs}=  Get Matching Xpath Count  xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[4]/a
-  ${num}=  Run Keyword If  '${type}' = 'dgfFinancialAssets'
+  ${num}=  Run Keyword If  '${type}' == 'dgfFinancialAssets'
   ...  Set Variable  1
   ...  ELSE  Set Variable  0
   Should Be True  ${docs} > ${num}
