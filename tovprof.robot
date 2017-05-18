@@ -880,7 +880,7 @@ Login
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  Reload Page
+  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Contains Element      id=disqualification
   Click Element                         id=disqualification
 
