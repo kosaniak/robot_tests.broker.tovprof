@@ -767,6 +767,9 @@ Login
   ${doc_value}=  Run Keyword If  '${field_name}' == 'documentType'
   ...    Get Text            xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[2]
   ...    ELSE    Get Text    xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[1]/a/p
+  ${doc_value}=  Run Keyword If  '${field_name}' == 'description'
+  ...    Get Text            xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[3]
+  ...    ELSE    Set Variable    ${doc_value}
   ${doc_value}=  Run Keyword If  '${field_name}' == 'documentType'
   ...    convert_document_type  ${doc_value}
   ...    ELSE    Get Text    xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[1]/a/p
