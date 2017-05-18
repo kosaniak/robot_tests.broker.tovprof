@@ -265,7 +265,7 @@ Login
   sleep  1
   Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
   sleep  1
-  ${return_value}=  Run Keyword If  ${ARGUMENTS[3]} == 'quantity'                Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[1]
+  ${return_value}=  Run Keyword If  ${ARGUMENTS[3]} == 'quantity'               Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[1]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'unit.code'                   Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[3]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'unit.name'                   Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[2]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'description'                 Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[1]/span[1]
@@ -891,19 +891,21 @@ Login
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Sleep  1
+  Wait Until Page Contains Element    xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/form/button
   Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/form/button
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
   Reload Page
+  ${award_num}=    inc    ${award_num}
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/a[@id='disqualify']
-  Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[5]/button
+  Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/a[@id='disqualify']
   Sleep  1
   Input Text                          xpath=.//*[@id='reason']  ${description}
-  click Element                       xpath=.//*[@id='modalDisqualification']/div/div/div[2]/form/button
+  click Element                       xpath=.//*[@id='modalDisqualification']//form/button
 
 Завантажити протокол аукціону в авард
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
@@ -939,7 +941,7 @@ Login
   Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
   ${docs}=  Get Matching Xpath Count  xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[4]/a
-  ${num}=  Run Keyword If  '${type}' = 'dgfFinancialAssets'
+  ${num}=  Run Keyword If  '${type}' == 'dgfFinancialAssets'
   ...  Set Variable  1
   ...  ELSE  Set Variable  0
   Should Be True  ${docs} > ${num}
