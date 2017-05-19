@@ -263,7 +263,7 @@ Login
   ...      ${ARGUMENTS[3]} ==  field_name
   Reload Page
   sleep  1
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=  Run Keyword If  ${ARGUMENTS[3]} == 'quantity'               Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[1]
   ...    ELSE  Run Keyword  If  ${AGUMENTS[3]} == 'unit.code'                   Get Text  xpath=html/body/div/div[3]/table/tbody/tr[@class='${item_id}']/td[2]/span[3]
@@ -281,7 +281,7 @@ Login
   ...      ${ARGUMENTS[2]} ==  fieldname
   Reload Page
   Sleep  1
-  Click Element     xpath=html/body/div[1]/div/div[2]/div/ul/li[2]/a
+  Click Element     xpath=//a[@aria-controls="param-auc"]
   ${return_value}=  Run Keyword  Отримати інформацію про ${ARGUMENTS[2]}
   [return]           ${return_value}
 
@@ -363,7 +363,7 @@ Login
 
 Отримати інформацію про items[${index}].quantity
   Reload Page
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=    Get Text  ${locator.items[${index}].quantity}
   ${return_value}=    Convert To Number   ${return_value}
@@ -371,42 +371,42 @@ Login
 
 Отримати інформацію про items[${index}].unit.code
   Reload Page
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].unit.code}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].unit.name
   Reload Page
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].unit.name}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].description
   Reload Page
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].description}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].classification.id
   Reload Page
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].classification.id}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].classification.scheme
   Reload Page
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].classification.scheme}
   [return]           ${return_value}
 
 Отримати інформацію про items[${index}].classification.description
   Reload Page
-  Click Element      xpath=html/body/div/div/div[2]/div/ul/li[3]/a
+  Click Element      xpath=//a[@aria-controls="param-items"]
   sleep  1
   ${return_value}=   Get Text  ${locator.items[${index}].classification.description}
   [return]           ${return_value}
@@ -523,7 +523,7 @@ Login
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
-  Click Element    xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Click Element    xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[1]/span[1]
   ${return_value}=   Get text         xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[1]/span[1]
@@ -534,7 +534,7 @@ Login
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
-  Click Element    xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Click Element    xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[2]
   ${return_value}=   Get text         xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[2]
@@ -545,7 +545,7 @@ Login
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
-  Click Element    xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Click Element    xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[3]
   ${return_value}=   Get text         xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[3]
@@ -556,7 +556,7 @@ Login
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
-  Click Element    xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Click Element    xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[1]/span[2]
   ${return_value}=   Get text         xpath=.//*[@id='auc-questions']/table/tbody/tr[${index}]/td[1]/span[2]
@@ -567,7 +567,7 @@ Login
   log to console  ${index}
   ${index}=    inc    ${index}
   Sleep  1
-  Click Element            xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Click Element            xpath=//a[@aria-controls="result-auc"]
   Sleep  1
   ${value}=    Get Text    xpath=.//*[@id='result-auc']/table/tbody/tr[${index}]/td[2]/p
   ${return_value}=   convert_tovprof_string_to_common_string    ${value}
@@ -744,7 +744,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${document_index}  ${field}
   Reload Page
   Sleep  1
-  Click Element    xpath=html/body/div/div/div[2]/div/ul/li[4]/a
+  Click Element    xpath=//a[@aria-controls="auc-docs"]
   Sleep  1
   log to console  ${field}
   log to console  ${document_index}
@@ -760,13 +760,16 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field_name}
   Reload Page
   Sleep  1
-  Click Element    xpath=html/body/div/div/div[2]/div/ul/li[4]/a
+  Click Element    xpath=//a[@aria-controls="auc-docs"]
   Sleep  1
   log to console  ${field_name}
   log to console  ${doc_id}
   ${doc_value}=  Run Keyword If  '${field_name}' == 'documentType'
   ...    Get Text            xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[2]
   ...    ELSE    Get Text    xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[1]/a/p
+  ${doc_value}=  Run Keyword If  '${field_name}' == 'description'
+  ...    Get Text            xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[3]
+  ...    ELSE    Set Variable    ${doc_value}
   ${doc_value}=  Run Keyword If  '${field_name}' == 'documentType'
   ...    convert_document_type  ${doc_value}
   ...    ELSE    Get Text    xpath=.//*[@id='auc-docs']/table/tbody/tr[@class='doc ${doc_id}']/td[1]/a/p
@@ -775,9 +778,9 @@ Login
 Відповісти на запитання
   [Arguments]  ${username}  ${tender_uaid}  ${answer_data}  ${item_id}
   Reload Page
-  Wait Until Page Contains Element      xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Wait Until Page Contains Element      xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
-  Click Element                         xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Click Element                         xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
   Wait Until Page Contains Element      xpath=.//*[@id='auc-questions']/table/tbody/tr[@class='${item_id}']/td[3]/*[@id='addAnswer']
   Click Element                         xpath=.//*[@id='auc-questions']/table/tbody/tr[@class='${item_id}']/td[3]/*[@id='addAnswer']
@@ -806,7 +809,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}    ${question_id}  ${field_name}
   Reload Page
   Sleep  1
-  Click Element         xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Click Element         xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
   log to console  ${question_id}
   log to console  ${field_name}
@@ -820,9 +823,9 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${question}
   ${email}=  ${tender_uaid.data.procuringEntity.contactPoint}  email
   Reload Page
-  Wait Until Page Contains Element      xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Wait Until Page Contains Element      xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
-  Click Element                         xpath=html/body/div/div/div[2]/div/ul/li[5]/a
+  Click Element                         xpath=//a[@aria-controls="auc-questions"]
   Sleep  1
   Wait Until Page Contains Element    id=addQuestion
   Click Element                       id=addQuestion
@@ -850,7 +853,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
   Reload Page
   log to console  ${doc_id}
-  Click Element   xpath=html/body/div/div/div[2]/div/ul/li[4]/a
+  Click Element   xpath=//a[@aria-controls="auc-docs"]
   Sleep   1
   Click Element   xpath=//*[@id='auc-docs']//tr[contains(@class, 'doc ${doc_id}')]/td[1]/a/p
   sleep   1
@@ -862,8 +865,8 @@ Login
 Отримати дані із документу пропозиції
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}  ${document_index}  ${field}
   Reload Page
-  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
-  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Wait Until Page Contains Element    xpath=//a[@aria-controls="result-auc"]
+  Click Element                       xpath=//a[@aria-controls="result-auc"]
   ${document_index}=                  inc    ${document_index}
   Sleep  1
   ${result}=   Get Text               xpath=.//*[@id='result-auc']/table/tbody/tr[${bid_index}]/td[4]/a[${document_index}]/p
@@ -872,15 +875,15 @@ Login
 Отримати кількість документів в ставці
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
   Reload Page
-  Wait Until Page Contains Element                xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
-  Click Element                                   xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Wait Until Page Contains Element                xpath=//a[@aria-controls="result-auc"]
+  Click Element                                   xpath=//a[@aria-controls="result-auc"]
   Sleep  1
   ${bid_doc_number}=  Get Matching Xpath Count    xpath=.//*[@id='result-auc']/table/tbody/tr[${bid_index}]/td[4]/a
   [Return]  ${bid_doc_number}
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  Reload Page
+  tovprof.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Contains Element      id=disqualification
   Click Element                         id=disqualification
 
@@ -888,8 +891,8 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   Reload Page
   ${award_num}=    inc    ${award_num}
-  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
-  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Wait Until Page Contains Element    xpath=//a[@aria-controls="result-auc"]
+  Click Element                       xpath=//a[@aria-controls="result-auc"]
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/form/button
   Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/form/button
@@ -898,8 +901,8 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
   Reload Page
   ${award_num}=    inc    ${award_num}
-  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
-  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Wait Until Page Contains Element    xpath=//a[@aria-controls="result-auc"]
+  Click Element                       xpath=//a[@aria-controls="result-auc"]
   Sleep  1
   Wait Until Page Contains Element    xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/a[@id='disqualify']
   Click Element                       xpath=.//*[@id='result-auc']/table/tbody/tr[${award_num}]/td[5]/a[@id='disqualify']
@@ -938,8 +941,8 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${award_index}
   Reload Page
   ${type}=  Отримати інформацію про procurementMethodType
-  Wait Until Page Contains Element    xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
-  Click Element                       xpath=html/body/div[1]/div/div[2]/div/ul/li[1]/a
+  Wait Until Page Contains Element    xpath=//a[@aria-controls="result-auc"]
+  Click Element                       xpath=//a[@aria-controls="result-auc"]
   ${docs}=  Get Matching Xpath Count  xpath=.//*[@id='result-auc']/table/tbody/tr[1]/td[4]/a
   ${num}=  Run Keyword If  '${type}' == 'dgfFinancialAssets'
   ...  Set Variable  1
