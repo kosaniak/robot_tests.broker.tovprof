@@ -585,6 +585,8 @@ Login
   ${is_qualified}=   is_qualified         ${ARGUMENTS[2]}
   ${is_eligible}=    is_eligible          ${ARGUMENTS[2]}
   tovprof.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
+  ${type}=    Отримати інформацію про procurementMethodType
+  Reload Page
   Wait Until Page Contains Element    id=makeBid
   Click Element                       id=makeBid
   Sleep   1
@@ -592,6 +594,7 @@ Login
   Input Text                          xpath=.//*[@id='modalMakeBid']//input[@name="bidValue"]    ${amount}
   Run Keyword If    ${is_qualified}   Sleep  1
   ...  ELSE  ${amount}=  0
+  Run Keyword If    '${type}' == 'dgfFinancialAssets'    Click Element    xpath=//input[@name="eligible"]
   Click Element     xpath=.//*[@id='modalMakeBid']//button[@type="submit"]
   [return]          ${amount}
 
